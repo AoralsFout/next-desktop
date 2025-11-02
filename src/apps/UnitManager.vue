@@ -23,6 +23,12 @@
                     </div>
                 </div>
             </div>
+            <div class="layout-actions">
+                <button class="clear-layout-btn" @click="clearLayout">清除布局数据</button>
+                <div class="layout-info">
+                    下次启动时将恢复当前布局
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -68,6 +74,19 @@ const closeUnit = (unitId) => {
             data: { unitId }
         }
     }))
+}
+
+// 清除布局数据
+const clearLayout = () => {
+    if (confirm('确定要清除所有Unit布局数据吗？下次启动时将不会恢复当前布局。')) {
+        // 发送事件给UnitManager组件
+        window.dispatchEvent(new CustomEvent('unitManagerAction', {
+            detail: {
+                action: 'clearLayout'
+            }
+        }))
+        alert('布局数据已清除')
+    }
 }
 
 onMounted(() => {
@@ -190,5 +209,35 @@ onUnmounted(() => {
 
 .open-btn:hover {
     background-color: #005a9e;
+}
+
+.layout-actions {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+    border: 1px solid #e0e0e0;
+}
+
+.clear-layout-btn {
+    padding: 6px 12px;
+    border: 1px solid #d32f2f;
+    border-radius: 3px;
+    background-color: #d32f2f;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.clear-layout-btn:hover {
+    background-color: #b71c1c;
+}
+
+.layout-info {
+    font-size: 12px;
+    color: #666;
 }
 </style>

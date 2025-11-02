@@ -187,6 +187,15 @@ const stopDrag = () => {
     document.removeEventListener('mousemove', handleDrag)
     document.removeEventListener('mouseup', stopDrag)
     document.removeEventListener('keyup', handleKeyUp)
+    
+    // 拖拽结束后发送Unit更新事件
+    window.dispatchEvent(new CustomEvent('unitUpdated', {
+        detail: { 
+            unitId: props.unitId,
+            position: { ...unitPosition.value },
+            size: { ...unitSize.value }
+        }
+    }))
 }
 
 // 处理按键释放

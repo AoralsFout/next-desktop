@@ -24,9 +24,73 @@ const units = ref([])
 // 可用的Unit列表（从Units文件夹获取）
 const availableUnits = ref(['Example', 'Time', 'BRHeader'])
 
+// 存储键名
+const STORAGE_KEY = 'desktopUnitLayout'
+
 // 获取Unit实例
 const getUnitInstance = (unitId) => {
     return unitRefs.value.find(u => u.unitId === unitId)
+}
+
+// 保存Unit布局到本地存储
+const saveUnitLayout = () => {
+    try {
+        const layoutData = {
+            units: units.value.map(unit => ({
+                id: unit.id,
+                componentName: unit.componentName,
+                options: unit.options
+            })),
+            timestamp: Date.now()
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(layoutData))
+        console.log('Unit布局已保存，当前Unit数:', units.value.length)
+    } catch (error) {
+        console.error('保存Unit布局失败:', error)
+    }
+}
+
+// 加载Unit布局从本地存储
+const loadUnitLayout = async () => {
+    try {
+        const savedLayout = localStorage.getItem(STORAGE_KEY)
+        if (savedLayout) {
+            const layoutData = JSON.parse(savedLayout)
+            
+            // 检查数据是否过期（超过7天）
+            const oneWeek = 7 * 24 * 60 * 60 * 1000
+            if (Date.now() - layoutData.timestamp > oneWeek) {
+                console.log('Unit布局数据已过期，清除旧数据')
+                localStorage.removeItem(STORAGE_KEY)
+                return
+            }
+            
+            if (layoutData.units && layoutData.units.length > 0) {
+                console.log('加载保存的Unit布局，Unit数:', layoutData.units.length)
+                
+                // 逐个打开保存的Unit
+                for (const unitData of layoutData.units) {
+                    await openUnit(unitData.componentName, unitData.options)
+                }
+                
+                console.log('Unit布局加载完成')
+            }
+        }
+    } catch (error) {
+        console.error('加载Unit布局失败:', error)
+        // 如果加载失败，清除可能损坏的数据
+        localStorage.removeItem(STORAGE_KEY)
+    }
+}
+
+// 清除Unit布局数据
+const clearUnitLayout = () => {
+    try {
+        localStorage.removeItem(STORAGE_KEY)
+        console.log('Unit布局数据已清除')
+    } catch (error) {
+        console.error('清除Unit布局数据失败:', error)
+    }
 }
 
 // 打开新Unit
@@ -65,6 +129,9 @@ const openUnit = async (componentName, options = {}) => {
         await unitInstance.open(componentName, unitOptions)
     }
     
+    // Unit打开后保存布局
+    saveUnitLayout()
+    
     return unitId
 }
 
@@ -77,6 +144,8 @@ const closeUnit = (unitId) => {
         // 延迟从列表中移除，等待动画完成
         setTimeout(() => {
             units.value = units.value.filter(u => u.id !== unitId)
+            // Unit关闭后保存布局
+            saveUnitLayout()
         }, 300)
     }
 }
@@ -93,6 +162,8 @@ const closeAllUnits = () => {
     // 延迟清空列表
     setTimeout(() => {
         units.value = []
+        // 关闭所有Unit后保存布局
+        saveUnitLayout()
     }, 300)
 }
 
@@ -149,6 +220,8 @@ const handleUnitClosed = (event) => {
         console.log(`Unit列表更新，当前Unit数: ${units.value.length}`)
         // Unit列表更新后发送更新事件
         handleGetUnitList()
+        // Unit关闭后保存布局
+        saveUnitLayout()
     }, 300)
 }
 
@@ -167,6 +240,25 @@ const handleUnitManagerAction = (event) => {
             closeUnit(data.unitId)
             // Unit关闭后会在handleUnitClosed中处理更新
             break
+        case 'clearLayout':
+            clearUnitLayout()
+            break
+    }
+}
+
+// 处理Unit位置或大小变化
+const handleUnitUpdated = (event) => {
+    const { unitId, position, size } = event.detail
+    const unitIndex = units.value.findIndex(u => u.id === unitId)
+    if (unitIndex !== -1) {
+        if (position) {
+            units.value[unitIndex].options.position = position
+        }
+        if (size) {
+            units.value[unitIndex].options.size = size
+        }
+        // Unit更新后保存布局
+        saveUnitLayout()
     }
 }
 
@@ -174,12 +266,19 @@ onMounted(() => {
     window.addEventListener('unitClosed', handleUnitClosed)
     window.addEventListener('getUnitList', handleGetUnitList)
     window.addEventListener('unitManagerAction', handleUnitManagerAction)
+    window.addEventListener('unitUpdated', handleUnitUpdated)
+    
+    // 组件挂载后加载保存的Unit布局
+    setTimeout(() => {
+        loadUnitLayout()
+    }, 100)
 })
 
 onUnmounted(() => {
     window.removeEventListener('unitClosed', handleUnitClosed)
     window.removeEventListener('getUnitList', handleGetUnitList)
     window.removeEventListener('unitManagerAction', handleUnitManagerAction)
+    window.removeEventListener('unitUpdated', handleUnitUpdated)
 })
 
 // 暴露方法给父组件使用
@@ -189,7 +288,10 @@ defineExpose({
     closeAllUnits,
     getActiveUnitCount,
     getUnitList,
-    openManagerWindow
+    openManagerWindow,
+    saveUnitLayout,
+    loadUnitLayout,
+    clearUnitLayout
 })
 </script>
 
