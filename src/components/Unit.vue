@@ -5,7 +5,7 @@
         <!-- Unit内容区域 -->
         <div class="unit-content" @mousedown="handleMouseDown">
             <!-- 动态加载Units文件夹中的组件 -->
-            <component :is="currentComponent" v-if="currentComponent" :key="componentKey" />
+            <component :is="currentComponent" v-if="currentComponent" :key="componentKey" :unitId="props.unitId" />
             <div v-else class="no-component">
                 Error: 未加载组件
             </div>
@@ -187,10 +187,10 @@ const stopDrag = () => {
     document.removeEventListener('mousemove', handleDrag)
     document.removeEventListener('mouseup', stopDrag)
     document.removeEventListener('keyup', handleKeyUp)
-    
+
     // 拖拽结束后发送Unit更新事件
     window.dispatchEvent(new CustomEvent('unitUpdated', {
-        detail: { 
+        detail: {
             unitId: props.unitId,
             position: { ...unitPosition.value },
             size: { ...unitSize.value }
@@ -318,6 +318,7 @@ defineExpose({
         opacity: 0;
         transform: scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -329,6 +330,7 @@ defineExpose({
         opacity: 1;
         transform: scale(1);
     }
+
     to {
         opacity: 0;
         transform: scale(0.95);
@@ -340,6 +342,7 @@ defineExpose({
         opacity: 0;
         transform: translateY(20px) scale(0.95);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -351,6 +354,7 @@ defineExpose({
         opacity: 1;
         transform: translateY(0) scale(1);
     }
+
     to {
         opacity: 0;
         transform: translateY(20px) scale(0.95);
@@ -362,6 +366,7 @@ defineExpose({
         opacity: 0;
         transform: scale(0.8);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -373,6 +378,7 @@ defineExpose({
         opacity: 1;
         transform: scale(1);
     }
+
     to {
         opacity: 0;
         transform: scale(0.8);
