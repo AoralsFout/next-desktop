@@ -258,8 +258,8 @@ const openUnitSettings = (unitId, componentName) => {
             options: {
                 animation: 'windowFadeIn',
                 size: {
-                    width: 600,
-                    height: 800
+                    width: 500,
+                    height: 600
                 },
                 unitId: unitId,
                 componentName: componentName

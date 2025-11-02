@@ -3,9 +3,9 @@
 ## 启动项目
 
 ```bash
-npm install
-npm run dev     # 浏览器启动项目
-npm start       # Electron启动项目
+pnpm install
+pnpm run dev     # 浏览器启动项目
+pnpm start       # Electron启动项目
 ```
 
 ## 桌面结构
