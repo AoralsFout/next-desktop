@@ -2,6 +2,8 @@
 
 ## 启动项目
 
+不知道为什么使用 npm 安装依赖会报错，所以先用 pnpm 安装依赖 (
+
 ```bash
 pnpm install
 pnpm run dev     # 浏览器启动项目
