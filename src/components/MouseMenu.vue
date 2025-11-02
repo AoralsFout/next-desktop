@@ -105,13 +105,90 @@ const showMenu = async (x, y) => {
     // 加载动画设置
     loadAnimationSettings()
     
-    position.value = { x, y }
+    // 先使用预估尺寸进行初步定位
+    const initialPosition = adjustMenuPosition(x, y)
+    position.value = initialPosition
     isAnimating.value = true
     await nextTick()
     isVisible.value = true
     
+    // 等待DOM渲染完成后，使用实际尺寸进行精确调整
+    await nextTick()
+    const finalPosition = adjustMenuPositionWithActualSize(x, y)
+    position.value = finalPosition
+    
     // 如果是无动画模式，立即处理打开完成
     handleNoAnimationState()
+}
+
+// 调整菜单位置，确保不超出屏幕边界
+const adjustMenuPosition = (x, y) => {
+    // 获取菜单元素尺寸（默认值，实际会在nextTick后获取）
+    const menuWidth = 160 // 最小宽度
+    const menuHeight = 160 // 预估高度（4个菜单项）
+    
+    // 获取屏幕尺寸
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    
+    // 边界检测和调整
+    let adjustedX = x
+    let adjustedY = y
+    
+    // 水平边界检测
+    if (x + menuWidth > screenWidth) {
+        // 如果菜单右侧超出屏幕，向左调整
+        adjustedX = screenWidth - menuWidth - 10 // 留10px边距
+    }
+    
+    // 垂直边界检测
+    if (y + menuHeight > screenHeight) {
+        // 如果菜单底部超出屏幕，向上调整
+        adjustedY = screenHeight - menuHeight - 10 // 留10px边距
+    }
+    
+    // 确保位置不小于0
+    adjustedX = Math.max(10, adjustedX) // 最小留10px边距
+    adjustedY = Math.max(10, adjustedY) // 最小留10px边距
+    
+    return { x: adjustedX, y: adjustedY }
+}
+
+// 获取菜单实际尺寸（在DOM渲染后）
+const getMenuSize = () => {
+    if (!menuRef.value) return { width: 160, height: 160 }
+    
+    const rect = menuRef.value.getBoundingClientRect()
+    return {
+        width: rect.width,
+        height: rect.height
+    }
+}
+
+// 更新边界判断函数，使用实际菜单尺寸
+const adjustMenuPositionWithActualSize = (x, y) => {
+    const menuSize = getMenuSize()
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    
+    let adjustedX = x
+    let adjustedY = y
+    
+    // 水平边界检测
+    if (x + menuSize.width > screenWidth) {
+        adjustedX = screenWidth - menuSize.width - 10
+    }
+    
+    // 垂直边界检测
+    if (y + menuSize.height > screenHeight) {
+        adjustedY = screenHeight - menuSize.height - 10
+    }
+    
+    // 确保位置不小于0
+    adjustedX = Math.max(10, adjustedX)
+    adjustedY = Math.max(10, adjustedY)
+    
+    return { x: adjustedX, y: adjustedY }
 }
 
 // 隐藏菜单
@@ -196,6 +273,15 @@ const handleConfigUpdated = (event) => {
     loadAnimationSettings()
 }
 
+// 处理窗口大小变化
+const handleResize = () => {
+    if (isVisible.value) {
+        // 如果菜单当前可见，重新调整位置
+        const finalPosition = adjustMenuPositionWithActualSize(position.value.x, position.value.y)
+        position.value = finalPosition
+    }
+}
+
 onMounted(() => {
     // 添加事件监听器
     document.addEventListener('contextmenu', handleContextMenu)
@@ -203,6 +289,7 @@ onMounted(() => {
     document.addEventListener('keydown', handleKeydown)
     document.addEventListener('animationend', handleAnimationEnd)
     window.addEventListener('configUpdated', handleConfigUpdated)
+    window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
@@ -212,6 +299,7 @@ onUnmounted(() => {
     document.removeEventListener('keydown', handleKeydown)
     document.removeEventListener('animationend', handleAnimationEnd)
     window.removeEventListener('configUpdated', handleConfigUpdated)
+    window.removeEventListener('resize', handleResize)
 })
 </script>
 

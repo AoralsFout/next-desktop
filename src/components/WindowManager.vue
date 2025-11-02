@@ -147,10 +147,10 @@ defineExpose({
 <style scoped>
 .window-manager {
     position: fixed;
-    top: 0;
+    top: 1.5vw;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 1.5vw);
     pointer-events: none;
     z-index: 99;
 }

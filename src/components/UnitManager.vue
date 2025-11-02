@@ -22,7 +22,7 @@ const unitRefs = ref([])
 const units = ref([])
 
 // 可用的Unit列表（从Units文件夹获取）
-const availableUnits = ref(['Example', 'Time'])
+const availableUnits = ref(['Example', 'Time', 'BRHeader'])
 
 // 获取Unit实例
 const getUnitInstance = (unitId) => {
@@ -36,6 +36,12 @@ const openUnit = async (componentName, options = {}) => {
     // 计算Unit位置（避免重叠，默认在窗口下方）
     const baseX = 100 + (units.value.length * 20)
     const baseY = 150 + (units.value.length * 20)
+
+    if (componentName === 'BRHeader') {
+        const screenWidth = window.innerWidth
+        const headerHeight = 1.5 * screenWidth
+        options.size = options.size || { width: screenWidth, height: headerHeight }
+    }
     
     const unitOptions = {
         position: options.position || { x: baseX, y: baseY },
@@ -190,10 +196,10 @@ defineExpose({
 <style scoped>
 .unit-manager {
     position: fixed;
-    top: 0;
+    top: 1.5vw;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 1.5vw);
     pointer-events: none;
     z-index: 49; /* 低于窗口管理器 */
 }

@@ -46,22 +46,6 @@ const handleOpenUnitManager = () => {
   }
 }
 
-// 处理UnitManager操作事件
-const handleUnitManagerAction = (event) => {
-  const { action, data } = event.detail
-
-  if (unitManagerRef.value) {
-    switch (action) {
-      case 'openUnit':
-        unitManagerRef.value.openUnit(data.unitName)
-        break
-      case 'closeUnit':
-        unitManagerRef.value.closeUnit(data.unitId)
-        break
-    }
-  }
-}
-
 // 应用配色方案
 const applyColorScheme = () => {
   const config = configManager.getConfig()
@@ -89,6 +73,7 @@ onMounted(() => {
 .container {
   width: 100vw;
   height: 100vh;
+  padding-top: 1.5vw;
   background-image: url('/src/assets/images/tempbg.jpeg');
   background-size: cover;
   background-position: center;

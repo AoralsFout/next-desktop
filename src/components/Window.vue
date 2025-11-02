@@ -1,13 +1,14 @@
 <!-- 窗口组件框架 - 支持多窗口 -->
 <template>
     <div v-show="shouldShowWindow" class="window-container" :class="currentAnimationClass" :style="windowStyle"
-        @click.stop="bringToFront" @animationend="handleAnimationEnd" ref="windowRef" :data-window-id="windowId">
+        @click="bringToFront" @animationend="handleAnimationEnd" ref="windowRef" :data-window-id="windowId">
         <!-- 窗口标题栏 -->
         <div class="window-header" @mousedown="startDrag">
             <div class="window-title">
                 {{ title }}
             </div>
             <div class="window-controls">
+                <!-- 我觉得不太需要最小化或者最大化（不是因为我不会做） -->
                 <!-- <button class="control-btn minimize" @click="minimize">−</button>
                 <button class="control-btn maximize" @click="toggleMaximize">□</button> -->
                 <button class="control-btn close" @click="close">×</button>
@@ -19,7 +20,7 @@
             <!-- 动态加载apps文件夹中的组件 -->
             <component :is="currentComponent" v-if="currentComponent" :key="componentKey" />
             <div v-else class="no-component">
-                Error: 未加载组件
+                未加载应用
             </div>
         </div>
     </div>
@@ -186,7 +187,7 @@ const close = () => {
     isVisible.value = false
     if (selectedAnimation.value !== 'noAnimation') {
         isAnimating.value = true
-    }else{
+    } else {
         isAnimating.value = false
     }
 
@@ -241,9 +242,36 @@ const startDrag = (event) => {
 const handleDrag = (event) => {
     if (!isDragging.value) return
 
+    // 计算新的窗口位置
+    let newX = event.clientX - dragOffset.value.x
+    let newY = event.clientY - dragOffset.value.y
+
+    // 获取屏幕边界
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+
+    // 边界检测 - 确保窗口不会超出屏幕
+    // 左边界检测
+    if (newX < 0) {
+        newX = 0
+    }
+    // 上边界检测
+    // Window 不能超过顶部 Header 的高度
+    if (newY < 0.015 * screenWidth) {
+        newY = 0.015 * screenWidth
+    }
+    // 右边界检测
+    if (newX + windowSize.value.width > screenWidth) {
+        newX = screenWidth - windowSize.value.width
+    }
+    // 下边界检测
+    if (newY + windowSize.value.height > screenHeight) {
+        newY = screenHeight - windowSize.value.height
+    }
+
     windowPosition.value = {
-        x: event.clientX - dragOffset.value.x,
-        y: event.clientY - dragOffset.value.y
+        x: newX,
+        y: newY
     }
 }
 
@@ -270,6 +298,8 @@ const handleAnimationEnd = (event) => {
 const handleWindowActivated = (event) => {
     if (event.detail.windowId !== props.windowId) {
         deactivate()
+    }else{
+        activate()
     }
 }
 

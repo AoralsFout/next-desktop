@@ -35,6 +35,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import configManager from '/src/utils/config.js'
 import dayjs from 'dayjs'
 
+// 背景设置
 const getHeaderBgColor = () => {
     const config = configManager.getConfig()
     const root = document.documentElement
@@ -124,6 +125,7 @@ const handleOpenSetting = () => {
     }))
 }
 
+// 打开文件
 const handleOpenFilesView = () => {
     const config = configManager.getConfig()
     window.dispatchEvent(new CustomEvent('openWindow', {
@@ -141,6 +143,7 @@ const handleOpenFilesView = () => {
     }))
 }
 
+// 打开信息
 const handleOpenInfo = () => {
     const config = configManager.getConfig()
     window.dispatchEvent(new CustomEvent('openWindow', {
@@ -158,6 +161,7 @@ const handleOpenInfo = () => {
     }))
 }
 
+// 打开时间
 const handleOpenTime = () => {
     const config = configManager.getConfig()
     window.dispatchEvent(new CustomEvent('openWindow', {
@@ -171,6 +175,8 @@ const handleOpenTime = () => {
     }))
 }
 
+
+// 打开Unit管理器
 const handleOpenUnitManager = () => {
     window.dispatchEvent(new CustomEvent('openUnitManager'))
 }
@@ -203,7 +209,7 @@ onUnmounted(() => {
     align-items: center;
     /* background-color: var(--header-bg); */
     color: var(--header-text);
-    z-index: 1;
+    z-index: 1000000;
     user-select: none;
 }
 

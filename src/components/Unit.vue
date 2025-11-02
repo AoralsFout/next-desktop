@@ -254,9 +254,9 @@ defineExpose({
     cursor: default;
 }
 
-.unit-content:hover {
-    /* cursor: move; */
-}
+/* .unit-content:hover {
+    cursor: move;
+} */
 
 .no-component {
     display: flex;
