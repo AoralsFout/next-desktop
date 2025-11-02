@@ -90,7 +90,7 @@ const fontColor = ref('#000000')
 
 // 存储键名
 const getStorageKey = () => {
-    return `unitSettings_Time`
+    return `unitSettings_Time_${props.unitId}`
 }
 
 const loadSettingsComponent = async () => {

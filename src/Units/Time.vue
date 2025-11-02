@@ -14,7 +14,7 @@ import dayjs from 'dayjs'
 const props = defineProps({
     unitId: {
         type: String,
-        default: () => `unit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        required: true
     }
 })
 
@@ -100,7 +100,10 @@ const handleSettingsUpdated = (event) => {
 // 加载设置
 const loadSettings = () => {
     try {
-        const savedSettings = localStorage.getItem('unitSettings_Time')
+        const savedSettings = localStorage.getItem(`unitSettings_Time_${props.unitId}`)
+        console.log(`unitSettings_Time_${props.unitId}`);
+        
+        console.log('加载设置:', savedSettings)
         if (savedSettings) {
             const settings = JSON.parse(savedSettings)
             timeFormat.value = settings.timeFormat || 'HH:mm:ss'

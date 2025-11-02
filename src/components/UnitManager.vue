@@ -2,12 +2,7 @@
 <template>
     <div class="unit-manager">
         <!-- 渲染所有Unit -->
-        <Unit
-            v-for="unit in units"
-            :key="unit.id"
-            :unitId="unit.id"
-            ref="unitRefs"
-        />
+        <Unit v-for="unit in units" :key="unit.id" :unitId="unit.id" ref="unitRefs" />
     </div>
 </template>
 
@@ -56,7 +51,7 @@ const loadUnitLayout = async () => {
         const savedLayout = localStorage.getItem(STORAGE_KEY)
         if (savedLayout) {
             const layoutData = JSON.parse(savedLayout)
-            
+
             // 检查数据是否过期（超过7天）
             const oneWeek = 7 * 24 * 60 * 60 * 1000
             if (Date.now() - layoutData.timestamp > oneWeek) {
@@ -64,15 +59,15 @@ const loadUnitLayout = async () => {
                 localStorage.removeItem(STORAGE_KEY)
                 return
             }
-            
+
             if (layoutData.units && layoutData.units.length > 0) {
                 console.log('加载保存的Unit布局，Unit数:', layoutData.units.length)
-                
+
                 // 逐个打开保存的Unit
                 for (const unitData of layoutData.units) {
-                    await openUnit(unitData.componentName, unitData.options)
+                    await openUnit(unitData.componentName, unitData.options, unitData.id)
                 }
-                
+
                 console.log('Unit布局加载完成')
             }
         }
@@ -94,12 +89,16 @@ const clearUnitLayout = () => {
 }
 
 // 打开新Unit
-// 打开新Unit
-const openUnit = async (componentName, options = {}) => {
+const openUnit = async (componentName, options = {}, loadUnitId = null) => {
     // 使用基于组件名称的稳定ID，而不是随机ID
     // 这样即使重新打开页面，相同类型的Unit也会使用相同的ID
-    const unitId = `unit_${componentName}_${Date.now()}`
-    
+    let unitId
+    if (loadUnitId) {
+        unitId = loadUnitId
+    } else {
+        unitId = `unit_${componentName}_${Date.now()}`
+    }
+
     // 计算Unit位置（避免重叠，默认在窗口下方）
     const baseX = 100 + (units.value.length * 20)
     const baseY = 150 + (units.value.length * 20)
@@ -109,29 +108,29 @@ const openUnit = async (componentName, options = {}) => {
         const headerHeight = 1.5 * screenWidth
         options.size = options.size || { width: screenWidth, height: headerHeight }
     }
-    
+
     const unitOptions = {
         position: options.position || { x: baseX, y: baseY },
         size: options.size || { width: 300, height: 200 },
         animation: options.animation || 'unitFadeIn',
         ...options
     }
-    
+
     // 添加到Unit列表
     units.value.push({
         id: unitId,
         componentName,
         options: unitOptions
     })
-    
+
     await nextTick()
-    
+
     // 获取Unit实例并打开
     const unitInstance = getUnitInstance(unitId)
     if (unitInstance) {
         await unitInstance.open(componentName, unitOptions)
     }
-    
+
     return unitId
 }
 
@@ -140,7 +139,7 @@ const closeUnit = (unitId) => {
     const unitInstance = getUnitInstance(unitId)
     if (unitInstance) {
         unitInstance.close()
-        
+
         // 延迟从列表中移除，等待动画完成
         setTimeout(() => {
             units.value = units.value.filter(u => u.id !== unitId)
@@ -158,7 +157,7 @@ const closeAllUnits = () => {
             instance.close()
         }
     })
-    
+
     // 延迟清空列表
     setTimeout(() => {
         units.value = []
@@ -213,7 +212,7 @@ const handleGetUnitList = () => {
 const handleUnitClosed = (event) => {
     const { unitId } = event.detail
     console.log(`Unit ${unitId} 已关闭，从列表中移除`)
-    
+
     // 延迟从列表中移除，等待动画完成
     setTimeout(() => {
         units.value = units.value.filter(u => u.id !== unitId)
@@ -228,7 +227,7 @@ const handleUnitClosed = (event) => {
 // 处理UnitManager窗口中的操作
 const handleUnitManagerAction = (event) => {
     const { action, data } = event.detail
-    
+
     switch (action) {
         case 'openUnit':
             openUnit(data.unitName).then(() => {
@@ -259,8 +258,8 @@ const openUnitSettings = (unitId, componentName) => {
             options: {
                 animation: 'windowFadeIn',
                 size: {
-                    width: 600,
-                    height: 800
+                    width: 500,
+                    height: 600
                 },
                 unitId: unitId,
                 componentName: componentName
@@ -290,7 +289,7 @@ onMounted(() => {
     window.addEventListener('getUnitList', handleGetUnitList)
     window.addEventListener('unitManagerAction', handleUnitManagerAction)
     window.addEventListener('unitUpdated', handleUnitUpdated)
-    
+
     // 组件挂载后加载保存的Unit布局
     setTimeout(() => {
         loadUnitLayout()
@@ -326,10 +325,11 @@ defineExpose({
     width: 100%;
     height: calc(100% - 1.5vw);
     pointer-events: none;
-    z-index: 49; /* 低于窗口管理器 */
+    z-index: 49;
+    /* 低于窗口管理器 */
 }
 
-.unit-manager > * {
+.unit-manager>* {
     pointer-events: auto;
 }
 </style>
