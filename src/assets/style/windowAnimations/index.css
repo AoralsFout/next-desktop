@@ -1,0 +1,26 @@
+/* 窗口动画主文件 */
+@import './fade.css';
+@import './slide.css';
+@import './scale.css';
+@import './bounce.css';
+@import './flip.css';
+
+/* 通用动画类 */
+.windowAnimation {
+    animation-fill-mode: both;
+}
+
+/* 快速动画 */
+.windowFast {
+    animation-duration: 0.1s !important;
+}
+
+/* 慢速动画 */
+.windowSlow {
+    animation-duration: 0.2s !important;
+}
+
+/* 禁用动画 */
+.noAnimation {
+    animation: none !important;
+}

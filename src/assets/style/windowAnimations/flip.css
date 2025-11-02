@@ -1,0 +1,32 @@
+/* 翻转动画 */
+.windowFlipIn {
+    animation: flipIn 0.5s ease-out forwards;
+    transform-origin: top center;
+}
+
+.windowFlipOut {
+    animation: flipOut 0.4s ease-in forwards;
+    transform-origin: top center;
+}
+
+@keyframes flipIn {
+    from {
+        opacity: 0;
+        transform: perspective(400px) rotateX(90deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(400px) rotateX(0);
+    }
+}
+
+@keyframes flipOut {
+    from {
+        opacity: 1;
+        transform: perspective(400px) rotateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: perspective(400px) rotateX(-90deg);
+    }
+}

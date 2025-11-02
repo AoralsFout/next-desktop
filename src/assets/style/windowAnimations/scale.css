@@ -1,0 +1,30 @@
+/* 缩放动画 */
+.windowScaleIn {
+    animation: scaleIn 0.25s ease-out forwards;
+}
+
+.windowScaleOut {
+    animation: scaleOut 0.25s ease-in forwards;
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes scaleOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+}

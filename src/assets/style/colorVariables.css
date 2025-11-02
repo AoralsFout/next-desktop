@@ -1,0 +1,32 @@
+/* 全局颜色变量定义 */
+:root {
+    /* Header 颜色变量 */
+    --header-bg: #333333;
+    --header-text: #ffffff;
+    --header-hover: #555555;
+    --header-active: #666666;
+    
+    /* Window 颜色变量 */
+    --window-bg: #2d2d2d;
+    --window-header-bg: #3c3c3c;
+    --window-border: #444444;
+    --window-text: #ffffff;
+    --window-controls-bg: #555555;
+    --window-controls-hover: #666666;
+    --window-controls-close-hover: #e74c3c;
+    --window-controls-minimize-hover: #f39c12;
+    --window-controls-maximize-hover: #3498db;
+    
+    /* MouseMenu 颜色变量 */
+    --mousemenu-bg: #333333;
+    --mousemenu-border: #555555;
+    --mousemenu-text: #ffffff;
+    --mousemenu-hover: #555555;
+    --mousemenu-active: #666666;
+    
+    /* Settings 颜色变量 */
+    --settings-bg: #3c3c3c;
+    --settings-section-bg: #3c3c3c;
+    --settings-text: #ffffff;
+    --settings-border: #444444;
+}
