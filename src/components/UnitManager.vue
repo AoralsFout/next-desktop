@@ -94,8 +94,11 @@ const clearUnitLayout = () => {
 }
 
 // 打开新Unit
+// 打开新Unit
 const openUnit = async (componentName, options = {}) => {
-    const unitId = `unit_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    // 使用基于组件名称的稳定ID，而不是随机ID
+    // 这样即使重新打开页面，相同类型的Unit也会使用相同的ID
+    const unitId = `unit_${componentName}_${Date.now()}`
     
     // 计算Unit位置（避免重叠，默认在窗口下方）
     const baseX = 100 + (units.value.length * 20)
@@ -128,9 +131,6 @@ const openUnit = async (componentName, options = {}) => {
     if (unitInstance) {
         await unitInstance.open(componentName, unitOptions)
     }
-    
-    // Unit打开后保存布局
-    saveUnitLayout()
     
     return unitId
 }
@@ -243,7 +243,30 @@ const handleUnitManagerAction = (event) => {
         case 'clearLayout':
             clearUnitLayout()
             break
+        case 'openUnitSettings':
+            openUnitSettings(data.unitId, data.componentName)
+            break
     }
+}
+
+// 打开Unit设置窗口
+const openUnitSettings = (unitId, componentName) => {
+    // 使用Window组件打开Unit设置窗口
+    window.dispatchEvent(new CustomEvent('openWindow', {
+        detail: {
+            componentName: 'UnitSettings',
+            componentTitle: `${componentName} - 设置`,
+            options: {
+                animation: 'windowFadeIn',
+                size: {
+                    width: 600,
+                    height: 800
+                },
+                unitId: unitId,
+                componentName: componentName
+            }
+        }
+    }))
 }
 
 // 处理Unit位置或大小变化

@@ -7,6 +7,8 @@
                 <div v-for="unit in unitList" :key="unit.id" class="unit-item">
                     <span class="unit-name">{{ unit.componentName }}</span>
                     <div class="unit-actions">
+                        <button class="action-btn settings-btn"
+                            @click="openUnitSettings(unit.id, unit.componentName)">设置</button>
                         <button class="action-btn" @click="closeUnit(unit.id)">关闭</button>
                     </div>
                 </div>
@@ -72,6 +74,17 @@ const closeUnit = (unitId) => {
         detail: {
             action: 'closeUnit',
             data: { unitId }
+        }
+    }))
+}
+
+// 打开Unit设置窗口
+const openUnitSettings = (unitId, componentName) => {
+    // 发送事件给UnitManager组件
+    window.dispatchEvent(new CustomEvent('unitManagerAction', {
+        detail: {
+            action: 'openUnitSettings',
+            data: { unitId, componentName }
         }
     }))
 }
@@ -163,6 +176,15 @@ onUnmounted(() => {
 
 .action-btn:hover {
     background-color: #f0f0f0;
+}
+
+.settings-btn {
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.settings-btn:hover {
+    background-color: #e8f5e8;
 }
 
 .no-units {

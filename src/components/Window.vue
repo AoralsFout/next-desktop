@@ -18,7 +18,7 @@
         <!-- 窗口内容区域 -->
         <div class="window-content">
             <!-- 动态加载apps文件夹中的组件 -->
-            <component :is="currentComponent" v-if="currentComponent" :key="componentKey" />
+            <component :is="currentComponent" v-if="currentComponent" :key="componentKey" v-bind="componentProps" />
             <div v-else class="no-component">
                 未加载应用
             </div>
@@ -60,6 +60,9 @@ const componentKey = ref(0)
 
 // 窗口标题
 const title = ref('窗口')
+
+// 组件props
+const componentProps = ref({})
 
 // 动画设置
 const selectedAnimation = ref('windowFadeIn')
@@ -158,7 +161,7 @@ const open = async (componentName, componentTitle = '窗口', options = {}) => {
     }
 
     // 加载组件
-    await loadComponent(componentName)
+    await loadComponent(componentName, options)
     title.value = componentTitle
 
     // 应用自定义位置和尺寸
@@ -209,15 +212,21 @@ const toggleMaximize = () => {
 }
 
 // 加载apps文件夹中的组件
-const loadComponent = async (componentName) => {
+const loadComponent = async (componentName, options = {}) => {
     try {
         // 动态导入apps文件夹中的组件
         const componentModule = await import(`../apps/${componentName}.vue`)
         currentComponent.value = markRaw(componentModule.default)
+
+        // 设置组件props（排除位置、尺寸、动画等窗口选项）
+        const { position, size, animation, ...componentOptions } = options
+        componentProps.value = componentOptions
+
         componentKey.value++ // 强制重新渲染
     } catch (error) {
         console.error(`加载组件 ${componentName} 失败:`, error)
         currentComponent.value = null
+        componentProps.value = {}
     }
 }
 
@@ -298,7 +307,7 @@ const handleAnimationEnd = (event) => {
 const handleWindowActivated = (event) => {
     if (event.detail.windowId !== props.windowId) {
         deactivate()
-    }else{
+    } else {
         activate()
     }
 }
