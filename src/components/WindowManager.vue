@@ -26,17 +26,89 @@ const getWindowInstance = (windowId) => {
     return windowRefs.value.find(w => w.windowId === windowId)
 }
 
+// 验证并调整窗口尺寸和位置，确保不超出屏幕
+const validateAndAdjustWindowBounds = (position, size) => {
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    const headerHeight = 0.018 * screenWidth
+    
+    // 可用区域：从Header下方到屏幕底部
+    const availableHeight = screenHeight - headerHeight
+    const minPadding = 10 // 最小边距
+    
+    let adjustedPosition = { ...position }
+    let adjustedSize = { ...size }
+    
+    // 限制窗口最大宽度（不超过屏幕宽度，留出边距）
+    if (adjustedSize.width > screenWidth - minPadding * 2) {
+        adjustedSize.width = screenWidth - minPadding * 2
+    }
+    
+    // 限制窗口最大高度（不超过可用高度，留出边距）
+    const maxHeight = availableHeight - minPadding * 2
+    if (adjustedSize.height > maxHeight) {
+        adjustedSize.height = maxHeight
+    }
+    
+    // 确保窗口最小尺寸
+    if (adjustedSize.width < 300) {
+        adjustedSize.width = 300
+    }
+    if (adjustedSize.height < 200) {
+        adjustedSize.height = 200
+    }
+    
+    // 调整窗口位置，确保不超出屏幕边界
+    // 左边界
+    if (adjustedPosition.x < 0) {
+        adjustedPosition.x = minPadding
+    }
+    // 右边界
+    if (adjustedPosition.x + adjustedSize.width > screenWidth) {
+        adjustedPosition.x = screenWidth - adjustedSize.width - minPadding
+    }
+    // 上边界（不能在Header下方）
+    if (adjustedPosition.y < headerHeight) {
+        adjustedPosition.y = headerHeight + minPadding
+    }
+    // 下边界：如果窗口会超出屏幕底部，向上调整位置
+    if (adjustedPosition.y + adjustedSize.height > screenHeight) {
+        adjustedPosition.y = screenHeight - adjustedSize.height - minPadding
+        // 如果调整后位置低于Header，则设置为Header下方
+        if (adjustedPosition.y < headerHeight + minPadding) {
+            adjustedPosition.y = headerHeight + minPadding
+            // 如果还是超出，缩小窗口高度
+            if (adjustedPosition.y + adjustedSize.height > screenHeight) {
+                adjustedSize.height = screenHeight - adjustedPosition.y - minPadding
+            }
+        }
+    }
+    
+    return { position: adjustedPosition, size: adjustedSize }
+}
+
 // 打开新窗口
 const openWindow = async (componentName, componentTitle = '窗口', options = {}) => {
     const windowId = `window_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
-    // 计算窗口位置（避免重叠）
+    // 计算Header高度（1.8vw转换为像素）
+    const screenWidth = window.innerWidth
+    const headerHeight = 0.018 * screenWidth
+    
+    // 计算窗口位置（避免重叠），确保在Header下方
     const baseX = 100 + (windows.value.length * 30)
-    const baseY = 100 + (windows.value.length * 30)
+    const baseY = headerHeight + 20 + (windows.value.length * 30) // Header高度 + 间距 + 偏移
+    
+    // 默认尺寸
+    const defaultSize = options.size || { width: 800, height: 600 }
+    const defaultPosition = options.position || { x: baseX, y: baseY }
+    
+    // 验证并调整窗口边界
+    const validated = validateAndAdjustWindowBounds(defaultPosition, defaultSize)
     
     const windowOptions = {
-        position: options.position || { x: baseX, y: baseY },
-        size: options.size || { width: 800, height: 600 },
+        position: validated.position,
+        size: validated.size,
         animation: options.animation || 'windowFadeIn',
         ...options
     }
@@ -147,10 +219,10 @@ defineExpose({
 <style scoped>
 .window-manager {
     position: fixed;
-    top: 1.5vw;
+    top: 1.8vw; /* Header实际高度 */
     left: 0;
     width: 100%;
-    height: calc(100% - 1.5vw);
+    height: calc(100% - 1.8vw); /* 预留Header空间 */
     pointer-events: none;
     z-index: 99;
 }

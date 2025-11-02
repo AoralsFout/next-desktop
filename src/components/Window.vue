@@ -150,6 +150,62 @@ const deactivate = () => {
     isActive.value = false
 }
 
+// 验证并调整窗口尺寸和位置，确保不超出屏幕
+const validateAndAdjustWindowBounds = () => {
+    const screenWidth = window.innerWidth
+    const screenHeight = window.innerHeight
+    const headerHeight = 0.018 * screenWidth
+    
+    // 可用区域：从Header下方到屏幕底部
+    const availableHeight = screenHeight - headerHeight
+    const minPadding = 10 // 最小边距
+    
+    // 限制窗口最大宽度（不超过屏幕宽度，留出边距）
+    if (windowSize.value.width > screenWidth - minPadding * 2) {
+        windowSize.value.width = screenWidth - minPadding * 2
+    }
+    
+    // 限制窗口最大高度（不超过可用高度，留出边距）
+    const maxHeight = availableHeight - minPadding * 2
+    if (windowSize.value.height > maxHeight) {
+        windowSize.value.height = maxHeight
+    }
+    
+    // 确保窗口最小尺寸
+    if (windowSize.value.width < 300) {
+        windowSize.value.width = 300
+    }
+    if (windowSize.value.height < 200) {
+        windowSize.value.height = 200
+    }
+    
+    // 调整窗口位置，确保不超出屏幕边界
+    // 左边界
+    if (windowPosition.value.x < 0) {
+        windowPosition.value.x = minPadding
+    }
+    // 右边界
+    if (windowPosition.value.x + windowSize.value.width > screenWidth) {
+        windowPosition.value.x = screenWidth - windowSize.value.width - minPadding
+    }
+    // 上边界（不能在Header下方）
+    if (windowPosition.value.y < headerHeight) {
+        windowPosition.value.y = headerHeight + minPadding
+    }
+    // 下边界：如果窗口会超出屏幕底部，向上调整位置
+    if (windowPosition.value.y + windowSize.value.height > screenHeight) {
+        windowPosition.value.y = screenHeight - windowSize.value.height - minPadding
+        // 如果调整后位置低于Header，则设置为Header下方
+        if (windowPosition.value.y < headerHeight + minPadding) {
+            windowPosition.value.y = headerHeight + minPadding
+            // 如果还是超出，缩小窗口高度
+            if (windowPosition.value.y + windowSize.value.height > screenHeight) {
+                windowSize.value.height = screenHeight - windowPosition.value.y - minPadding
+            }
+        }
+    }
+}
+
 // 打开窗口
 const open = async (componentName, componentTitle = '窗口', options = {}) => {
     // 加载最新配置
@@ -174,6 +230,9 @@ const open = async (componentName, componentTitle = '窗口', options = {}) => {
     if (options.animation) {
         selectedAnimation.value = options.animation
     }
+    
+    // 验证并调整窗口边界，确保不超出屏幕
+    validateAndAdjustWindowBounds()
 
     isAnimating.value = true
     await nextTick()
@@ -258,6 +317,9 @@ const handleDrag = (event) => {
     // 获取屏幕边界
     const screenWidth = window.innerWidth
     const screenHeight = window.innerHeight
+    
+    // 计算Header的实际高度（1.8vw转换为像素）
+    const headerHeight = 0.018 * screenWidth
 
     // 边界检测 - 确保窗口不会超出屏幕
     // 左边界检测
@@ -265,9 +327,9 @@ const handleDrag = (event) => {
         newX = 0
     }
     // 上边界检测
-    // Window 不能超过顶部 Header 的高度
-    if (newY < 0.015 * screenWidth) {
-        newY = 0.015 * screenWidth
+    // Window 不能超过顶部 Header 的高度（1.8vw）
+    if (newY < headerHeight) {
+        newY = headerHeight
     }
     // 右边界检测
     if (newX + windowSize.value.width > screenWidth) {

@@ -248,8 +248,13 @@ const handleMenuClick = (action) => {
 
 // 处理右键点击事件
 const handleContextMenu = (event) => {
+    // 检查是否点击在Header区域，如果是则不显示MouseMenu（让Header自己的右键菜单处理）
+    if (event.target.closest('.app-header')) {
+        return
+    }
+    
     event.preventDefault()
-        toggleMenu(event.clientX, event.clientY)
+    toggleMenu(event.clientX, event.clientY)
 }
 
 // 处理点击其他地方隐藏菜单

@@ -46,6 +46,13 @@ const handleOpenUnitManager = () => {
   }
 }
 
+// 处理关闭所有窗口事件
+const handleCloseAllWindows = () => {
+  if (windowManagerRef.value) {
+    windowManagerRef.value.closeAllWindows()
+  }
+}
+
 // 应用配色方案
 const applyColorScheme = () => {
   const config = configManager.getConfig()
@@ -66,6 +73,7 @@ onMounted(() => {
     window.addEventListener('exitApp', handleExitApp)
     window.addEventListener('configUpdated', handleConfigUpdated)
     window.addEventListener('openUnitManager', handleOpenUnitManager)
+    window.addEventListener('closeAllWindows', handleCloseAllWindows)
 })
 </script>
 
@@ -73,7 +81,7 @@ onMounted(() => {
 .container {
   width: 100vw;
   height: 100vh;
-  padding-top: 1.5vw;
+  padding-top: 1.8vw; /* 与Header高度一致 */
   background-image: url('/src/assets/images/tempbg.jpeg');
   background-size: cover;
   background-position: center;
