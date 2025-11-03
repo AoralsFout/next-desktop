@@ -9,7 +9,7 @@ const createWindow = () => {
     height: 800,
     fullscreen: true, // 默认全屏
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, './electron/preload.js'),
       nodeIntegration: true,
       contextIsolation: false
     }
