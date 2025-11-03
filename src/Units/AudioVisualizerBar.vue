@@ -55,6 +55,13 @@ const bottomDotColorType = ref('single')
 const bottomDotColor = ref('#f200ff')
 const bottomDotMargin = ref(10)
 
+// 新增发光效果设置
+const enableGlow = ref(true)
+const glowBlur = ref(10)
+const glowColorType = ref('single')
+const glowColor = ref('#f200ff')
+const glowIntensity = ref(0.8)
+
 // 初始化音频分析器
 const initAudioAnalyzer = () => {
     audioContext.value = new (window.AudioContext || window.webkitAudioContext)()
@@ -77,6 +84,35 @@ const getColor = (index, colorType, singleColor) => {
         return `hsla(${hue}, 100%, 50%, 0.8)`
     }
     return singleColor
+}
+
+// 获取发光颜色
+const getGlowColor = (index) => {
+    if (glowColorType.value === 'gradient') {
+        const hue = index / bufferLength.value * 720
+        return `hsla(${hue}, 100%, 50%, ${glowIntensity.value})`
+    }
+    return glowColor.value.replace(')', `, ${glowIntensity.value})`).replace('rgb', 'rgba')
+}
+
+// 应用发光效果
+const applyGlowEffect = (drawFunction, index = 0) => {
+    if (enableGlow.value) {
+        // 保存当前状态
+        ctx.value.save()
+
+        // 设置阴影效果
+        ctx.value.shadowBlur = glowBlur.value
+        ctx.value.shadowColor = getGlowColor(index)
+
+        // 执行绘制函数
+        drawFunction()
+
+        // 恢复状态
+        ctx.value.restore()
+    } else {
+        drawFunction()
+    }
 }
 
 // 绘制频谱
@@ -115,9 +151,11 @@ const drawSpectrum = () => {
                     break
             }
 
-            // 设置颜色
-            ctx.value.fillStyle = getColor(i, barColorType.value, barColor.value)
-            ctx.value.fillRect(x, y, Number(barWidth.value), barHeight)
+            // 应用发光效果绘制频谱条
+            applyGlowEffect(() => {
+                ctx.value.fillStyle = getColor(i, barColorType.value, barColor.value)
+                ctx.value.fillRect(x, y, Number(barWidth.value), barHeight)
+            }, i)
 
             // 计算频谱顶部和底部点
             let spectrumTopY, spectrumBottomY
@@ -146,61 +184,69 @@ const drawSpectrum = () => {
 
     // 绘制顶线
     if (drawTopLine.value && spectrumTopPoints.length > 1) {
-        ctx.value.beginPath()
-        ctx.value.moveTo(spectrumTopPoints[0].x, spectrumTopPoints[0].y)
+        applyGlowEffect(() => {
+            ctx.value.beginPath()
+            ctx.value.moveTo(spectrumTopPoints[0].x, spectrumTopPoints[0].y)
 
-        for (let i = 1; i < spectrumTopPoints.length; i++) {
-            ctx.value.lineTo(spectrumTopPoints[i].x, spectrumTopPoints[i].y)
-        }
+            for (let i = 1; i < spectrumTopPoints.length; i++) {
+                ctx.value.lineTo(spectrumTopPoints[i].x, spectrumTopPoints[i].y)
+            }
 
-        ctx.value.strokeStyle = getColor(0, topLineColorType.value, topLineColor.value)
-        ctx.value.lineWidth = Number(topLineWidth.value)
-        ctx.value.stroke()
+            ctx.value.strokeStyle = getColor(0, topLineColorType.value, topLineColor.value)
+            ctx.value.lineWidth = Number(topLineWidth.value)
+            ctx.value.stroke()
+        })
     }
 
     // 绘制底线
     if (drawBottomLine.value && spectrumBottomPoints.length > 1) {
-        ctx.value.beginPath()
-        ctx.value.moveTo(spectrumBottomPoints[0].x, spectrumBottomPoints[0].y)
+        applyGlowEffect(() => {
+            ctx.value.beginPath()
+            ctx.value.moveTo(spectrumBottomPoints[0].x, spectrumBottomPoints[0].y)
 
-        for (let i = 1; i < spectrumBottomPoints.length; i++) {
-            ctx.value.lineTo(spectrumBottomPoints[i].x, spectrumBottomPoints[i].y)
-        }
+            for (let i = 1; i < spectrumBottomPoints.length; i++) {
+                ctx.value.lineTo(spectrumBottomPoints[i].x, spectrumBottomPoints[i].y)
+            }
 
-        ctx.value.strokeStyle = getColor(0, bottomLineColorType.value, bottomLineColor.value)
-        ctx.value.lineWidth = Number(bottomLineWidth.value)
-        ctx.value.stroke()
+            ctx.value.strokeStyle = getColor(0, bottomLineColorType.value, bottomLineColor.value)
+            ctx.value.lineWidth = Number(bottomLineWidth.value)
+            ctx.value.stroke()
+        })
     }
 
     // 绘制顶圆点
     if (drawTopDots.value && spectrumTopPoints.length > 0) {
-        ctx.value.fillStyle = getColor(0, topDotColorType.value, topDotColor.value)
         for (let i = 0; i < spectrumTopPoints.length; i++) {
-            ctx.value.beginPath()
-            ctx.value.arc(
-                spectrumTopPoints[i].x,
-                spectrumTopPoints[i].y + Number(topDotMargin.value),
-                topDotRadius.value,
-                0,
-                Math.PI * 2
-            )
-            ctx.value.fill()
+            applyGlowEffect(() => {
+                ctx.value.fillStyle = getColor(0, topDotColorType.value, topDotColor.value)
+                ctx.value.beginPath()
+                ctx.value.arc(
+                    spectrumTopPoints[i].x,
+                    spectrumTopPoints[i].y + Number(topDotMargin.value),
+                    topDotRadius.value,
+                    0,
+                    Math.PI * 2
+                )
+                ctx.value.fill()
+            }, i)
         }
     }
 
     // 绘制底圆点
     if (drawBottomDots.value && spectrumBottomPoints.length > 0) {
-        ctx.value.fillStyle = getColor(0, bottomDotColorType.value, bottomDotColor.value)
         for (let i = 0; i < spectrumBottomPoints.length; i++) {
-            ctx.value.beginPath()
-            ctx.value.arc(
-                spectrumBottomPoints[i].x,
-                spectrumBottomPoints[i].y - Number(bottomDotMargin.value),
-                bottomDotRadius.value,
-                0,
-                Math.PI * 2
-            )
-            ctx.value.fill()
+            applyGlowEffect(() => {
+                ctx.value.fillStyle = getColor(0, bottomDotColorType.value, bottomDotColor.value)
+                ctx.value.beginPath()
+                ctx.value.arc(
+                    spectrumBottomPoints[i].x,
+                    spectrumBottomPoints[i].y - Number(bottomDotMargin.value),
+                    bottomDotRadius.value,
+                    0,
+                    Math.PI * 2
+                )
+                ctx.value.fill()
+            }, i)
         }
     }
 }
@@ -291,6 +337,15 @@ const loadSettings = () => {
             bottomDotColorType.value = settings.bottomDotColorType || 'single'
             bottomDotColor.value = settings.bottomDotColor || '#f200ff'
             bottomDotMargin.value = settings.bottomDotMargin || 10
+
+            // 加载发光效果设置
+            enableGlow.value = settings.enableGlow !== undefined ? settings.enableGlow : true
+            glowBlur.value = settings.glowBlur || 10
+            glowColorType.value = settings.glowColorType || 'single'
+            glowColor.value = settings.glowColor || '#f200ff'
+            glowIntensity.value = settings.glowIntensity || 0.8
+
+            console.log('加载设置:', settings)
         }
     } catch (error) {
         console.error('加载设置失败:', error)
