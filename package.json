@@ -15,6 +15,7 @@
   "dependencies": {
     "concurrently": "^9.2.1",
     "dayjs": "^1.11.19",
+    "electron-devtools-installer": "^4.0.0",
     "vue": "^3.5.22"
   },
   "devDependencies": {

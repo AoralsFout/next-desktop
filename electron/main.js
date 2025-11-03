@@ -10,8 +10,8 @@ const createWindow = () => {
     fullscreen: true, // 默认全屏
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,
-      contextIsolation: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
 
