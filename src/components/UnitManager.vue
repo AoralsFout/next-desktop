@@ -17,10 +17,11 @@ const unitRefs = ref([])
 const units = ref([])
 
 // 可用的Unit列表（从Units文件夹获取）
-const availableUnits = ref(['Time'])
+const availableUnits = ref(['Time', 'AudioVisualizer'])
 
 const unitSizeOptions = ref({
     Time: { width: 300, height: 200 },
+    AudioVisualizer: { width: 1920, height: 300 },
 })
 
 // 存储键名

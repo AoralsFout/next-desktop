@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, desktopCapturer, session } = require('electron')
 const path = require('node:path')
 
 let mainWindow
@@ -14,6 +14,17 @@ const createWindow = () => {
       contextIsolation: true
     }
   })
+
+  session.defaultSession.setDisplayMediaRequestHandler((request, callback) => {
+    desktopCapturer.getSources({ types: ['screen'] }).then((sources) => {
+      // Grant access to the first screen found.
+      callback({ video: sources[0], audio: 'loopback' })
+    })
+    // If true, use the system picker if available.
+    // Note: this is currently experimental. If the system picker
+    // is available, it will be used and the media request handler
+    // will not be invoked.
+  }, { useSystemPicker: true })
 
   mainWindow.loadURL('http://localhost:3000')
 }
