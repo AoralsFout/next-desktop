@@ -17,7 +17,11 @@ const unitRefs = ref([])
 const units = ref([])
 
 // 可用的Unit列表（从Units文件夹获取）
-const availableUnits = ref(['Example', 'Time', 'BRHeader'])
+const availableUnits = ref(['Time'])
+
+const unitSizeOptions = ref({
+    Time: { width: 300, height: 200 },
+})
 
 // 存储键名
 const STORAGE_KEY = 'desktopUnitLayout'
@@ -103,16 +107,12 @@ const openUnit = async (componentName, options = {}, loadUnitId = null) => {
     const baseX = 100 + (units.value.length * 20)
     const baseY = 150 + (units.value.length * 20)
 
-    if (componentName === 'BRHeader') {
-        const screenWidth = window.innerWidth
-        const headerHeight = 1.5 * screenWidth
-        options.size = options.size || { width: screenWidth, height: headerHeight }
-    }
+    options.size = options.size || unitSizeOptions.value[componentName] || { width: 300, height: 200 }
 
     const unitOptions = {
         position: options.position || { x: baseX, y: baseY },
         size: options.size || { width: 300, height: 200 },
-        animation: options.animation || 'unitFadeIn',
+        animation: options.animation,
         ...options
     }
 
@@ -187,7 +187,6 @@ const openManagerWindow = () => {
             componentName: 'UnitManager',
             componentTitle: 'Unit管理',
             options: {
-                animation: 'windowFadeIn',
                 size: {
                     width: 450,
                     height: 500
@@ -256,7 +255,6 @@ const openUnitSettings = (unitId, componentName) => {
             componentName: 'UnitSettings',
             componentTitle: `${componentName} - 设置`,
             options: {
-                animation: 'windowFadeIn',
                 size: {
                     width: 500,
                     height: 600
