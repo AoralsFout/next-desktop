@@ -55,6 +55,30 @@
             </div>
         </div>
         
+        <!-- 新增发光效果设置组 -->
+        <div class="setting-group">
+            <h4>发光效果设置</h4>
+            
+            <div class="setting-item">
+                <label class="setting-label">
+                    <input type="checkbox" v-model="glowEnabled" @change="saveSettings">
+                    启用文字发光效果
+                </label>
+            </div>
+            
+            <div class="setting-item" v-if="glowEnabled">
+                <label class="setting-label">发光颜色:</label>
+                <input type="color" v-model="glowColor" @change="saveSettings">
+                <span class="value-display">{{ glowColor }}</span>
+            </div>
+            
+            <div class="setting-item" v-if="glowEnabled">
+                <label class="setting-label">发光模糊度:</label>
+                <input type="range" v-model="glowBlur" min="1" max="30" step="1" @change="saveSettings">
+                <span class="value-display">{{ glowBlur }}px</span>
+            </div>
+        </div>
+        
         <div class="setting-group">
             <h4>预览</h4>
             <div class="preview" :style="previewStyle">
@@ -87,6 +111,10 @@ const showSeconds = ref(true)
 const showDate = ref(true)
 const fontSize = ref(3.5)
 const fontColor = ref('#000000')
+// 新增发光效果设置
+const glowEnabled = ref(false)
+const glowColor = ref('#ffffff')
+const glowBlur = ref(10)
 
 // 存储键名
 const getStorageKey = () => {
@@ -125,6 +153,10 @@ const loadSettings = () => {
             showDate.value = settings.showDate !== undefined ? settings.showDate : true
             fontSize.value = settings.fontSize || 3.5
             fontColor.value = settings.fontColor || '#000000'
+            // 加载发光效果设置
+            glowEnabled.value = settings.glowEnabled !== undefined ? settings.glowEnabled : false
+            glowColor.value = settings.glowColor || '#ffffff'
+            glowBlur.value = settings.glowBlur || 10
         }
     } catch (error) {
         console.error('加载设置失败:', error)
@@ -141,6 +173,10 @@ const saveSettings = () => {
             showDate: showDate.value,
             fontSize: fontSize.value,
             fontColor: fontColor.value,
+            // 保存发光效果设置
+            glowEnabled: glowEnabled.value,
+            glowColor: glowColor.value,
+            glowBlur: glowBlur.value
         }
         localStorage.setItem(getStorageKey(), JSON.stringify(settings))
     } catch (error) {
@@ -162,6 +198,10 @@ const applySettings = () => {
                 showDate: showDate.value,
                 fontSize: fontSize.value,
                 fontColor: fontColor.value,
+                // 应用发光效果设置
+                glowEnabled: glowEnabled.value,
+                glowColor: glowColor.value,
+                glowBlur: glowBlur.value
             }
         }
     }))
@@ -177,6 +217,10 @@ const resetSettings = () => {
         showDate.value = true
         fontSize.value = 3.5
         fontColor.value = '#000000'
+        // 重置发光效果设置
+        glowEnabled.value = false
+        glowColor.value = '#ffffff'
+        glowBlur.value = 10
         applySettings()
     }
 }
@@ -185,6 +229,7 @@ const resetSettings = () => {
 const previewStyle = computed(() => ({
     fontSize: `${fontSize.value}rem`,
     color: fontColor.value,
+    textShadow: glowEnabled.value ? `0 0 ${glowBlur.value}px ${glowColor.value}` : 'none'
 }))
 
 // 预览时间

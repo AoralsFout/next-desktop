@@ -30,18 +30,24 @@ const showSeconds = ref(true)
 const showDate = ref(true)
 const fontSize = ref(3.5)
 const fontColor = ref('#000000')
+// 新增发光效果设置
+const glowEnabled = ref(false)
+const glowColor = ref('#ffffff')
+const glowBlur = ref(10)
 
 let timeInterval = null
 
 const timeStyle = computed(() => ({
     fontSize: `${fontSize.value}rem`,
-    color: fontColor.value
+    color: fontColor.value,
+    textShadow: glowEnabled.value ? `0 0 ${glowBlur.value}px ${glowColor.value}` : 'none'
 }))
 
 const dateStyle = computed(() => ({
     fontSize: `${fontSize.value * 0.45}rem`,
     color: fontColor.value,
-    opacity: 0.9
+    opacity: 0.9,
+    textShadow: glowEnabled.value ? `0 0 ${glowBlur.value * 0.7}px ${glowColor.value}` : 'none'
 }))
 
 // 更新时间显示
@@ -112,6 +118,10 @@ const loadSettings = () => {
             showDate.value = settings.showDate !== undefined ? settings.showDate : true
             fontSize.value = settings.fontSize || 3.5
             fontColor.value = settings.fontColor || '#000000'
+            // 加载发光效果设置
+            glowEnabled.value = settings.glowEnabled !== undefined ? settings.glowEnabled : false
+            glowColor.value = settings.glowColor || '#ffffff'
+            glowBlur.value = settings.glowBlur || 10
         }
     } catch (error) {
         console.error('加载设置失败:', error)
@@ -158,5 +168,10 @@ onUnmounted(() => {
     font-weight: lighter;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     transition: all 0.3s ease;
+}
+
+/* 确保发光效果有平滑过渡 */
+.time, .date {
+    transition: all 0.3s ease, text-shadow 0.3s ease;
 }
 </style>
