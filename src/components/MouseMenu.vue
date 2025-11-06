@@ -320,6 +320,7 @@ onUnmounted(() => {
     /* 确保动画能正常工作 */
     opacity: 0;
     transform: scale(0.95);
+    z-index: 9999;
 }
 
 .mouse-menu.windowAnimation {

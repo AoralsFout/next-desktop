@@ -15,29 +15,44 @@
         </div>
         <div class="header-right">
             <div class="header-item" @click="handleOpenUnitManager">
-                units
+                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" fill="none">
+                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="#000000" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </div>
             <div class="header-item" @click="handleOpenFilesView">
-                files
+                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M3 8.2C3 7.07989 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H9.67452C10.1637 5 10.4083 5 10.6385 5.05526C10.8425 5.10425 11.0376 5.18506 11.2166 5.29472C11.4184 5.4184 11.5914 5.59135 11.9373 5.93726L12.0627 6.06274C12.4086 6.40865 12.5816 6.5816 12.7834 6.70528C12.9624 6.81494 13.1575 6.89575 13.3615 6.94474C13.5917 7 13.8363 7 14.3255 7H17.8C18.9201 7 19.4802 7 19.908 7.21799C20.2843 7.40973 20.5903 7.71569 20.782 8.09202C21 8.51984 21 9.0799 21 10.2V15.8C21 16.9201 21 17.4802 20.782 17.908C20.5903 18.2843 20.2843 18.5903 19.908 18.782C19.4802 19 18.9201 19 17.8 19H6.2C5.07989 19 4.51984 19 4.09202 18.782C3.71569 18.5903 3.40973 18.2843 3.21799 17.908C3 17.4802 3 16.9201 3 15.8V8.2Z"
+                        stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </div>
             <div class="header-item" @click="handleOpenSetting">
-                setting
+                <svg xmlns="http://www.w3.org/2000/svg" width="27px" height="27px" viewBox="0 0 24 24" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M14.1395 12.0002C14.1395 13.1048 13.2664 14.0002 12.1895 14.0002C11.1125 14.0002 10.2395 13.1048 10.2395 12.0002C10.2395 10.8957 11.1125 10.0002 12.1895 10.0002C13.2664 10.0002 14.1395 10.8957 14.1395 12.0002Z"
+                        stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M7.57381 18.1003L5.12169 12.8133C4.79277 12.2907 4.79277 11.6189 5.12169 11.0963L7.55821 5.89229C7.93118 5.32445 8.55898 4.98876 9.22644 5.00029H12.1895H15.1525C15.8199 4.98876 16.4477 5.32445 16.8207 5.89229L19.2524 11.0923C19.5813 11.6149 19.5813 12.2867 19.2524 12.8093L16.8051 18.1003C16.4324 18.674 15.8002 19.0133 15.1281 19.0003H9.24984C8.5781 19.013 7.94636 18.6737 7.57381 18.1003Z"
+                        stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </div>
             <div class="header-item" @click="handleExitApp">
-                exit
+                <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M16.0563 9.08667C16.5075 8.7626 17.1448 8.86318 17.389 9.36214C17.7211 10.0405 17.9234 10.7783 17.9821 11.5373C18.0668 12.6322 17.8494 13.7293 17.3536 14.7091C16.8577 15.6889 16.1025 16.5139 15.1702 17.0941C14.2379 17.6743 13.1642 17.9875 12.0661 17.9996C10.968 18.0117 9.8877 17.7222 8.94281 17.1627C7.99791 16.6032 7.2247 15.7951 6.70741 14.8264C6.19012 13.8577 5.94858 12.7657 6.00913 11.6692C6.0511 10.9091 6.23713 10.167 6.55416 9.4815C6.78734 8.97728 7.42223 8.86269 7.88047 9.17673C8.33871 9.49078 8.44139 10.1155 8.25163 10.6377C8.11874 11.0033 8.03945 11.3881 8.0178 11.7801C7.97756 12.509 8.1381 13.2349 8.48196 13.8787C8.82581 14.5226 9.33977 15.0598 9.96785 15.4317C10.5959 15.8036 11.314 15.9961 12.0439 15.988C12.7738 15.98 13.4875 15.7718 14.1073 15.3861C14.727 15.0004 15.229 14.4521 15.5586 13.8008C15.8882 13.1495 16.0327 12.4202 15.9764 11.6924C15.9461 11.301 15.8584 10.918 15.7174 10.5554C15.5162 10.0376 15.6051 9.41073 16.0563 9.08667Z"
+                        fill="#000000" />
+                    <path
+                        d="M12 8V12M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z"
+                        stroke="#000000" stroke-width="2" stroke-linecap="round" />
+                </svg>
             </div>
         </div>
-        
+
         <!-- 右键菜单 -->
-        <div 
-            v-show="shouldShowContextMenu" 
-            class="header-context-menu"
-            :class="currentAnimationClass"
-            :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }"
-            @click.stop
-            @animationend="handleAnimationEnd"
-            ref="contextMenuRef"
-        >
+        <div v-show="shouldShowContextMenu" class="header-context-menu" :class="currentAnimationClass"
+            :style="{ top: contextMenuPosition.y + 'px', left: contextMenuPosition.x + 'px' }" @click.stop
+            @animationend="handleAnimationEnd" ref="contextMenuRef">
             <div class="context-menu-item" @click="handleCloseAllWindows">
                 <span class="menu-icon">✕</span>
                 <span>关闭所有窗口</span>
@@ -252,11 +267,11 @@ const currentAnimationClass = computed(() => {
     if (!isContextMenuVisible.value && !isContextMenuAnimating.value) {
         return ''
     }
-    
-    const animationClass = isContextMenuVisible.value ? 
-        selectedAnimation.value : 
+
+    const animationClass = isContextMenuVisible.value ?
+        selectedAnimation.value :
         getCloseAnimationClass(selectedAnimation.value)
-    
+
     return [
         'windowAnimation',
         animationClass,
@@ -289,24 +304,24 @@ const adjustMenuPosition = (x, y) => {
     const menuHeight = 180
     const screenWidth = window.innerWidth
     const screenHeight = window.innerHeight
-    
+
     let adjustedX = x
     let adjustedY = y
-    
+
     // 水平边界检测
     if (x + menuWidth > screenWidth) {
         adjustedX = screenWidth - menuWidth - 10
     }
-    
+
     // 垂直边界检测
     if (y + menuHeight > screenHeight) {
         adjustedY = screenHeight - menuHeight - 10
     }
-    
+
     // 确保位置不小于0
     adjustedX = Math.max(10, adjustedX)
     adjustedY = Math.max(10, adjustedY)
-    
+
     return { x: adjustedX, y: adjustedY }
 }
 
@@ -315,25 +330,25 @@ const showContextMenu = async (x, y) => {
     if (isContextMenuAnimating.value) {
         await new Promise(resolve => setTimeout(resolve, 100))
     }
-    
+
     loadAnimationSettings()
-    
+
     const adjustedPosition = adjustMenuPosition(x, y)
     contextMenuPosition.value = adjustedPosition
     isContextMenuAnimating.value = true
     await nextTick()
     isContextMenuVisible.value = true
-    
+
     handleNoAnimationState()
 }
 
 // 隐藏右键菜单
 const hideContextMenu = () => {
     if (!isContextMenuVisible.value && !isContextMenuAnimating.value) return
-    
+
     isContextMenuVisible.value = false
     isContextMenuAnimating.value = true
-    
+
     handleNoAnimationState()
 }
 
@@ -359,7 +374,7 @@ const handleCloseAllWindows = () => {
 
 // 处理点击其他地方隐藏菜单
 const handleClickOutside = (event) => {
-    if ((isContextMenuVisible.value || isContextMenuAnimating.value) && 
+    if ((isContextMenuVisible.value || isContextMenuAnimating.value) &&
         !event.target.closest('.header-context-menu')) {
         hideContextMenu()
     }
@@ -426,6 +441,7 @@ onUnmounted(() => {
     height: 100%;
     cursor: pointer;
     color: var(--header-text);
+    display: flex;
     justify-content: center;
     align-items: center;
     padding: 0 10px;

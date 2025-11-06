@@ -224,7 +224,7 @@ defineExpose({
     width: 100%;
     height: calc(100% - 1.8vw); /* 预留Header空间 */
     pointer-events: none;
-    z-index: 99;
+    z-index: 99999;
 }
 
 .window-manager > * {
