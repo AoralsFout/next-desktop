@@ -1,5 +1,9 @@
 # Next Desktop 项目
 
+## 项目介绍
+
+Next Desktop 是一个基于 Electron 框架的桌面项目。
+
 ## 启动项目
 
 ```bash
