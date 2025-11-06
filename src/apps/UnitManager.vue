@@ -25,12 +25,12 @@
                     </div>
                 </div>
             </div>
-            <div class="layout-actions">
+            <!-- <div class="layout-actions">
                 <button class="clear-layout-btn" @click="clearLayout">清除布局数据</button>
                 <div class="layout-info">
                     下次启动时将恢复当前布局
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -125,7 +125,7 @@ onUnmounted(() => {
 .manager-content {
     height: 100%;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 20px;
 }
 
@@ -139,7 +139,12 @@ onUnmounted(() => {
 }
 
 .unit-list {
-    flex: 1;
+    width: 70%;
+    overflow-y: auto;
+}
+
+.available-units {
+    width: 30%;
     overflow-y: auto;
 }
 

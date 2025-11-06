@@ -160,6 +160,35 @@ const calculateBarPoints = (angle, barLength) => {
     return { startX, startY, endX, endY }
 }
 
+const expandAndInterpolateArray = (inputArray) => {
+    if (!(inputArray instanceof Uint8Array)) {
+        throw new Error('输入必须是Uint8Array类型');
+    }
+    
+    const originalLength = inputArray.length;
+    const threeQuartersLength = Math.floor(originalLength * 3 / 4);
+    
+    const result = new Uint8Array(originalLength);
+    result.set(inputArray.subarray(0, threeQuartersLength), 0);
+    
+    const paddingLength = originalLength - threeQuartersLength;
+    
+    // 使用线性插值填充
+    for (let i = 0; i < paddingLength; i++) {
+        const ratio = (i + 1) / (paddingLength + 1);
+        const startIndex = Math.floor((threeQuartersLength - 1) * (1 - ratio));
+        const endIndex = Math.floor((threeQuartersLength - 1) * ratio);
+        
+        const value = Math.round(
+            (inputArray[startIndex] * (1 - ratio)) + 
+            (inputArray[endIndex] * ratio)
+        );
+        result[threeQuartersLength + i] = Math.min(255, Math.max(0, value));
+    }
+    
+    return result;
+}
+
 // 绘制环形频谱
 const drawSpectrum = () => {
     if (!analyser.value || !ctx.value || !canvas.value) return
@@ -168,10 +197,12 @@ const drawSpectrum = () => {
 
     analyser.value.getByteFrequencyData(dataArray.value)
 
-    const halfLength = Math.floor(bufferLength.value / 2)
-    for (let i = halfLength; i < bufferLength.value; i++) {
-        const mirrorIndex = bufferLength.value - 1 - i
-        dataArray.value[i] = dataArray.value[mirrorIndex]
+    dataArray.value = expandAndInterpolateArray(dataArray.value)
+
+    for (let i = 0; i < bufferLength.value; i++) {
+        if (dataArray.value[i] <= 4) {
+            dataArray.value[i] = 4
+        }
     }
 
     // 清除画布

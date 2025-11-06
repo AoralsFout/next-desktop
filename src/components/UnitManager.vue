@@ -17,12 +17,13 @@ const unitRefs = ref([])
 const units = ref([])
 
 // 可用的Unit列表（从Units文件夹获取）
-const availableUnits = ref(['Time', 'AudioVisualizerBar', 'AudioVisualizerCircle'])
+const availableUnits = ref(['Time', 'AudioVisualizerBar', 'AudioVisualizerCircle', 'ClockClock'])
 
 const unitSizeOptions = ref({
     Time: { width: 300, height: 200 },
     AudioVisualizerBar: { width: 1920, height: 300 },
     AudioVisualizerCircle: { width: 800, height: 800 },
+    ClockClock: { width: 780, height: 180 },
 })
 
 // 存储键名
@@ -190,7 +191,7 @@ const openManagerWindow = () => {
             componentTitle: 'Unit管理',
             options: {
                 size: {
-                    width: 450,
+                    width: 900,
                     height: 500
                 },
             }
